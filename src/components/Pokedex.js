@@ -1,18 +1,21 @@
 import React from 'react';
 import { arrayOf } from 'prop-types';
-
 import Pokemon from './Pokemon';
 import { pokemonType } from '../types';
 
 class Pokedex extends React.Component {
-  state = {
-    index: 0,
-  };
+  constructor(props) {
+    super(props);
+    const { pokemonList } = this.props;
+    this.state = {
+      index: 0,
+      filteredPokemonList: [...pokemonList],
+    };
+  }
 
   handleCLick = () => {
-    const { pokemonList } = this.props;
-    const { index } = this.state;
-    if (index === pokemonList.length - 1) {
+    const { index, filteredPokemonList } = this.state;
+    if (index === filteredPokemonList.length - 1) {
       this.setState({
         index: 0,
       });
@@ -23,16 +26,30 @@ class Pokedex extends React.Component {
     }
   };
 
-  render() {
+  handleFilter = (type) => {
     const { pokemonList } = this.props;
-    const { index } = this.state;
+    const filteredPokemonList = pokemonList
+      .filter((pokemon) => pokemon.type === type);
+    this.setState({
+      index: 0,
+      filteredPokemonList,
+    });
+  };
+
+  render() {
+    const { index, filteredPokemonList } = this.state;
     return (
       <>
         <h1> Pokédex </h1>
         <div className="pokedex">
-          <Pokemon key={ pokemonList[index].id } pokemon={ pokemonList[index] } />
+          <Pokemon
+            key={ filteredPokemonList[index].id }
+            pokemon={ filteredPokemonList[index] }
+          />
         </div>
-        <button onClick={ this.handleCLick }>Próximo pokémon</button>     
+        <button onClick={ () => this.handleFilter('Fire') }>Fire</button>
+        <button onClick={ () => this.handleFilter('Psychic') }>Psychic</button>
+        <button onClick={ this.handleCLick }>Próximo pokémon</button>
       </>
     );
   }
