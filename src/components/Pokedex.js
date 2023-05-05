@@ -2,6 +2,7 @@ import React from 'react';
 import { arrayOf } from 'prop-types';
 import Pokemon from './Pokemon';
 import { pokemonType } from '../types';
+import Button from './Button';
 
 class Pokedex extends React.Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class Pokedex extends React.Component {
     this.state = {
       index: 0,
       filteredPokemonList: [...pokemonList],
+      types: [...new Set(pokemonList.map((pokemon) => pokemon.type)), 'All'],
     };
   }
 
@@ -28,8 +30,12 @@ class Pokedex extends React.Component {
 
   handleFilter = (type) => {
     const { pokemonList } = this.props;
-    const filteredPokemonList = pokemonList
-      .filter((pokemon) => pokemon.type === type);
+    const filteredPokemonList = type === 'All'
+      ? [...pokemonList]
+      : (
+        pokemonList
+          .filter((pokemon) => pokemon.type === type)
+      );
     this.setState({
       index: 0,
       filteredPokemonList,
@@ -37,7 +43,7 @@ class Pokedex extends React.Component {
   };
 
   render() {
-    const { index, filteredPokemonList } = this.state;
+    const { index, filteredPokemonList, types } = this.state;
     return (
       <>
         <h1> Pokédex </h1>
@@ -47,9 +53,18 @@ class Pokedex extends React.Component {
             pokemon={ filteredPokemonList[index] }
           />
         </div>
-        <button onClick={ () => this.handleFilter('Fire') }>Fire</button>
-        <button onClick={ () => this.handleFilter('Psychic') }>Psychic</button>
-        <button onClick={ this.handleCLick }>Próximo pokémon</button>
+        { types.map((type) => (
+          <Button
+            key={ type }
+            onClick={ () => this.handleFilter(type) }
+            innerText={ type }
+          />
+        ))}
+        <Button
+          onClick={ this.handleCLick }
+          innerText="Próximo pokémon"
+          disabled={ filteredPokemonList.length === 1 }
+        />
       </>
     );
   }
