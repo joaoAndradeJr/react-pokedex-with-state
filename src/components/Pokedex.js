@@ -9,6 +9,20 @@ class Pokedex extends React.Component {
     index: 0,
   };
 
+  handleCLick = () => {
+    const { pokemonList } = this.props;
+    const { index } = this.state;
+    if (index === pokemonList.length - 1) {
+      this.setState({
+        index: 0,
+      });
+    } else {
+      this.setState((previousState) => ({
+        index: previousState.index + 1,
+      }));
+    }
+  };
+
   render() {
     const { pokemonList } = this.props;
     const { index } = this.state;
@@ -18,6 +32,7 @@ class Pokedex extends React.Component {
         <div className="pokedex">
           <Pokemon key={ pokemonList[index].id } pokemon={ pokemonList[index] } />
         </div>
+        <button onClick={ this.handleCLick }>Próximo pokémon</button>     
       </>
     );
   }
